@@ -1,0 +1,53 @@
+VoltDB - kolejny krok po instalacji Java
+========================================
+
+Status:
+- Java jest już poprawnie zainstalowana
+- polecenie find nie znalazło voltdb/sqlcmd/voltadmin w katalogu domowym
+- to oznacza, że VoltDB najpewniej nie jest jeszcze rozpakowane albo zainstalowane
+
+Wykonaj teraz te polecenia:
+
+1) Sprawdzenie katalogu Downloads
+--------------------------------
+
+cd ~/Downloads
+ls -lh | grep -i volt
+
+2) Jeśli zobaczysz paczkę VoltDB .tar.gz, rozpakuj ją
+----------------------------------------------------
+
+cd ~/Downloads
+tar -xzf NAZWA_PLIKU_VOLTDB.tar.gz
+ls -lh
+
+3) Jeśli rozpakowałeś katalog, sprawdź binarki w środku
+------------------------------------------------------
+
+cd ROZPAKOWANY_KATALOG
+find . -type f \( -name voltdb -o -name sqlcmd -o -name voltadmin \)
+
+4) Jeśli nic nie ma w Downloads, przeszukaj typowe miejsca systemowe
+-------------------------------------------------------------------
+
+sudo find /opt /usr/local /usr /home -type f \( -name voltdb -o -name sqlcmd -o -name voltadmin \) 2>/dev/null
+
+Interpretacja:
+- jeśli znajdziesz ścieżki do voltdb/sqlcmd/voltadmin, to VoltDB jest na maszynie i trzeba tylko ustawić PATH
+- jeśli nadal nic nie znajdziesz, to VoltDB nie ma jeszcze na tej maszynie
+
+Jeśli pojawi się ścieżka typu /opt/voltdb/bin/voltdb, ustaw PATH tak:
+
+export PATH=/opt/voltdb/bin:$PATH
+which voltdb
+which sqlcmd
+which voltadmin
+
+Dopiero gdy which voltdb zacznie zwracać ścieżkę, wykonaj test uruchomienia:
+
+mkdir -p ~/voltdb-smoke
+cd ~/voltdb-smoke
+voltdb init --dir=~/voltdb-smoke/testdb
+voltdb start --dir=~/voltdb-smoke/testdb
+
+Po wykonaniu wklej wyniki poleceń.
