@@ -1,0 +1,140 @@
+VoltDB / VoultDB - szybki smoke test do szkolenia
+===================================================
+
+Plik przygotowany pod szybkie przeniesienie komend na maszynę wirtualną.
+Zakres testu jest zgodny z tematyką szkolenia: uruchomienie, administracja,
+zapytania SQL i podstawy pracy w środowisku Kubernetes.
+
+1) Sprawdzenie środowiska
+-------------------------
+
+lsb_release -a
+java -version
+python3 --version
+free -h
+which voltdb
+which sqlcmd
+which voltadmin
+
+2) Jeśli Java nie jest zainstalowana lub jest zła wersja
+--------------------------------------------------------
+
+sudo apt update
+sudo apt install -y openjdk-17-jdk
+java -version
+
+3) Inicjalizacja i start lokalnej instancji VoltDB
+--------------------------------------------------
+
+mkdir -p ~/voltdb-smoke
+cd ~/voltdb-smoke
+voltdb init --dir=~/voltdb-smoke/testdb
+voltdb start --dir=~/voltdb-smoke/testdb
+
+4) Test połączenia SQL
+----------------------
+
+sqlcmd
+
+Po wejściu do sqlcmd wklej:
+
+CREATE TABLE test_szkolenie (
+    id INTEGER NOT NULL,
+    nazwa VARCHAR(64),
+    PRIMARY KEY (id)
+);
+
+INSERT INTO test_szkolenie VALUES (1, 'VoltDB_OK');
+SELECT COUNT(*) AS ile FROM test_szkolenie;
+SELECT * FROM test_szkolenie;
+
+5) Test administracyjny
+-----------------------
+
+voltadmin status
+
+6) Bezpieczne zamknięcie
+------------------------
+
+voltadmin shutdown --save
+
+7) Test pod Kubernetes, jeśli środowisko już istnieje
+-----------------------------------------------------
+
+kubectl get pods
+kubectl exec -it <nazwa-poda-voltdb> -- voltadmin status
+kubectl exec -it <nazwa-poda-voltdb> -- sqlcmd
+
+8) Co powinno wyjść poprawnie
+-----------------------------
+
+- Ubuntu 22.04 lub inne wspierane środowisko
+- Java 17 lub 21
+- Dostępne polecenia: voltdb, sqlcmd, voltadmin
+- Start instancji bez błędów
+- CREATE TABLE / INSERT / SELECT działają
+- voltadmin status zwraca status klastra lub hosta
+
+9) Typowe problemy
+------------------
+
+A. Brak Java:
+   Zainstaluj OpenJDK 17.
+
+B. Brak poleceń voltdb/sqlcmd/voltadmin:
+   VoltDB nie jest dodane do PATH albo nie jest zainstalowane.
+
+C. Błąd licencji:
+   W Enterprise Edition sprawdź plik license.xml.
+
+D. Kubernetes:
+   Jeśli kubectl nie widzi poda, najpierw sprawdź kontekst klastra:
+   kubectl config current-context
+
+10) Wersja do szybkiego kopiowania blokami
+------------------------------------------
+
+# blok 1
+lsb_release -a
+java -version
+python3 --version
+free -h
+which voltdb
+which sqlcmd
+which voltadmin
+
+# blok 2
+sudo apt update
+sudo apt install -y openjdk-17-jdk
+java -version
+
+# blok 3
+mkdir -p ~/voltdb-smoke
+cd ~/voltdb-smoke
+voltdb init --dir=~/voltdb-smoke/testdb
+voltdb start --dir=~/voltdb-smoke/testdb
+
+# blok 4
+sqlcmd
+
+# blok 5 - do wklejenia wewnątrz sqlcmd
+CREATE TABLE test_szkolenie (
+    id INTEGER NOT NULL,
+    nazwa VARCHAR(64),
+    PRIMARY KEY (id)
+);
+
+INSERT INTO test_szkolenie VALUES (1, 'VoltDB_OK');
+SELECT COUNT(*) AS ile FROM test_szkolenie;
+SELECT * FROM test_szkolenie;
+
+# blok 6
+voltadmin status
+
+# blok 7
+voltadmin shutdown --save
+
+# blok 8 - Kubernetes
+kubectl get pods
+kubectl exec -it <nazwa-poda-voltdb> -- voltadmin status
+kubectl exec -it <nazwa-poda-voltdb> -- sqlcmd
