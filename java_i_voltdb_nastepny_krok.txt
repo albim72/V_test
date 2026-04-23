@@ -1,0 +1,26 @@
+VoltDB - krok z Java do wykonania teraz
+=======================================
+
+Na screenie:
+- Java NIE jest jeszcze zainstalowana
+- system tylko pokazuje propozycje pakietów
+- VoltDB nadal nie jest dostępne w PATH
+
+Wykonaj teraz dokładnie te komendy:
+
+sudo apt update
+sudo apt install -y openjdk-17-jdk
+java -version
+
+Jeżeli instalacja się powiedzie, wynik powinien zawierać coś podobnego do:
+openjdk version "17..."
+
+Następnie sprawdź, czy pliki VoltDB istnieją gdzieś na dysku:
+
+find ~ -type f \( -name voltdb -o -name sqlcmd -o -name voltadmin \) 2>/dev/null
+
+Interpretacja:
+- jeśli znajdzie ścieżki do voltdb/sqlcmd/voltadmin, to VoltDB jest na dysku i trzeba tylko ustawić PATH
+- jeśli nic nie znajdzie, to VoltDB nie jest jeszcze rozpakowane albo zainstalowane
+
+Po wykonaniu wklej wynik tych poleceń.
